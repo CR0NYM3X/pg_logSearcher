@@ -1,7 +1,7 @@
 
 # pg_logSearcher 🚀
 
-**pg_logSearcher** es una utilidad ágil en Bash diseñada para la auditoría y rastreo forense de usuarios en logs comprimidos de PostgreSQL. Permite extraer actividad específica de archivos históricos `.tar.gz` sin necesidad de descompresión manual, organizando los hallazgos en reportes estructurados.
+**pg_logSearcher** es una utilidad ágil en Bash diseñada para la auditoría de usuarios en logs comprimidos de PostgreSQL. Permite extraer actividad específica de archivos históricos `.tar.gz` sin necesidad de descompresión manual, organizando los hallazgos en reportes estructurados.
 
 ## 🛠️ Instalación y Uso
 
@@ -69,7 +69,13 @@ Fecha de ejecución: Wed Feb 25 11:15:00 MST 2026
 [11:15:10] Archivo: postgresql-251203.tar.gz -> VACÍO
 
 ```
- 
+
+# Extraer Conexiones del usuarios
+Puedes usar este filtro para ser mas especifico en caso de que quieras traer solo las conexiones 
+```text
+ grep "connection authorized" /sysx/data/pg_log/resultados_user_log/admin_db/postgresql-251201.log
+```text
+
 
 ### ✨ Características Clave
 
