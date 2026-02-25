@@ -74,7 +74,7 @@ Fecha de ejecución: Wed Feb 25 11:15:00 MST 2026
 Puedes usar este filtro para ser mas especifico en caso de que quieras traer solo las conexiones 
 ```text
  grep "connection authorized" /sysx/data/pg_log/resultados_user_log/admin_db/postgresql-251201.log
-```text
+```
 
 
 ### ✨ Características Clave
