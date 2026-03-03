@@ -47,7 +47,7 @@ for usuario in "${lista_usuarios[@]}"; do
 
         # Buscar y guardar directamente en el archivo .log
         # Usamos un archivo temporal para verificar si hubo matches
-        zcat "$archivo" | grep -i -a "$usuario_trim" > "$DESTINO_LOG"
+        zcat "$archivo" | grep -i -a "$usuario_trim" | grep -Ei "connection authorized|connection received" > "$DESTINO_LOG"
 
         # Validar si el archivo tiene contenido
         if [ -s "$DESTINO_LOG" ]; then
