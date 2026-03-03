@@ -77,9 +77,56 @@ Puedes usar este filtro para ser mas especifico en caso de que quieras traer sol
 ```
 
 
-### ✨ Características Clave
+----
 
-* **Búsqueda no destructiva:** Lee directamente de archivos comprimidos (`zcat`).
-* **Aislamiento de datos:** Crea archivos `.log` individuales por cada día donde hubo actividad.
-* **Control de integridad:** Reporta archivos procesados incluso si no hubo hallazgos para asegurar una revisión completa.
- 
+
+### Mejoras que voy a aplicar
+
+1. **Argumento opcional para controlar CPUs** → `$3`
+2. **Validación** de que el número sea válido
+3. **Modo seguro**: nunca usar más CPUs de las disponibles---
+
+## Cómo se usa ahora
+
+### Sin controlar CPUs (usa todos los disponibles)
+```bash
+./audit_pg_logs.sh /var/log/postgresql "postgres,appuser"
+```
+
+### Controlando cuántas CPUs usar
+```bash
+./audit_pg_logs.sh /var/log/postgresql "postgres,appuser" 4
+```
+
+### Si pones más CPUs de las que hay, te avisa y se ajusta solo
+```bash
+./audit_pg_logs.sh /var/log/postgresql "postgres,appuser" 99
+# AVISO: Solicitaste 99 CPUs pero solo hay 8 disponibles.
+#        Se usarán 8.
+```
+
+---
+
+## Qué muestra al arrancar
+```
+╔══════════════════════════════════════════════════╗
+║   Auditoría de Conexiones PostgreSQL             ║
+╚══════════════════════════════════════════════════╝
+  Ruta de logs    : /var/log/postgresql
+  CPUs disponibles: 8
+  CPUs a usar     : 4          ← ves exactamente cuántas usará
+  Usuarios        : postgres appuser
+  Archivos .tar.gz encontrados: 24
+```
+
+---
+
+## Sobre la seguridad de tus archivos originales
+
+El script **solo hace lectura** sobre los `.tar.gz` con `zcat`. Los únicos `rm` que existen son sobre archivos que el propio script creó:
+
+| Archivo que borra | Cuándo | Dónde |
+|---|---|---|
+| `resultados_user_log/.tmp_extracted/*.filtered` | Al terminar cada archivo | Carpeta temporal del script |
+| `resultados_user_log/usuario/*.log` vacíos | Si no encontró nada | Carpeta de resultados |
+
