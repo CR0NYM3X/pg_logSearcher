@@ -183,7 +183,89 @@ printf '%s\n' "${archivos[@]}" \
 # ── Limpiar directorio temporal ───────────────────────────────────────────────
 rmdir "$TEMP_DIR" 2>/dev/null
 
-# ── Resumen final ─────────────────────────────────────────────────────────────
+# ── Generar reporte general ───────────────────────────────────────────────────
+REPORTE_GENERAL="$RESULT_BASE_DIR/reporte_general.txt"
+FECHA_FIN=$(date)
+
+{
+    echo "============================================================"
+    echo "  REPORTE GENERAL DE AUDITORÍA PostgreSQL"
+    echo "============================================================"
+    echo "  Fecha de ejecución : $FECHA_FIN"
+    echo "  Ruta de logs       : $LOG_PATH"
+    echo "  Archivos revisados : ${#archivos[@]}"
+    echo "  Usuarios auditados : ${#lista_usuarios[@]}"
+    echo "  CPUs utilizadas    : $NUM_CPUS de $CPUS_DISPONIBLES disponibles"
+    echo "============================================================"
+    echo ""
+
+    # ── Sección: Usuarios CON resultados ─────────────────────────────────────
+    usuarios_con_hits=()
+    usuarios_sin_hits=()
+
+    for usuario in "${lista_usuarios[@]}"; do
+        TRACKING_FILE="$RESULT_BASE_DIR/$usuario/seguimiento_revision.txt"
+        encontrados=$(grep -c "ENCONTRADO" "$TRACKING_FILE" 2>/dev/null || echo 0)
+        if [ "$encontrados" -gt 0 ]; then
+            usuarios_con_hits+=("$usuario")
+        else
+            usuarios_sin_hits+=("$usuario")
+        fi
+    done
+
+    # ── Bloque: CON actividad ─────────────────────────────────────────────────
+    if [ ${#usuarios_con_hits[@]} -gt 0 ]; then
+        echo "  ✔  USUARIOS CON ACTIVIDAD ENCONTRADA (${#usuarios_con_hits[@]})"
+        echo "  ------------------------------------------------------------"
+        for usuario in "${usuarios_con_hits[@]}"; do
+            TRACKING_FILE="$RESULT_BASE_DIR/$usuario/seguimiento_revision.txt"
+            encontrados=$(grep -c "ENCONTRADO" "$TRACKING_FILE" 2>/dev/null || echo 0)
+            echo ""
+            echo "  Usuario : $usuario"
+            echo "  Archivos con hits: $encontrados"
+            echo "  Detalle de archivos:"
+            # Listar solo los archivos donde encontró resultados
+            grep "ENCONTRADO" "$TRACKING_FILE" | while read -r linea; do
+                # Extraer solo el nombre del archivo del log
+                nombre=$(echo "$linea" | grep -oP 'Archivo: \K[^ ]+')
+                echo "    - $nombre"
+            done
+            echo "  Ver detalle completo: $RESULT_BASE_DIR/$usuario/seguimiento_revision.txt"
+        done
+    else
+        echo "  ✔  USUARIOS CON ACTIVIDAD ENCONTRADA"
+        echo "  ------------------------------------------------------------"
+        echo "  (ninguno)"
+    fi
+
+    echo ""
+    echo "  ============================================================"
+    echo ""
+
+    # ── Bloque: SIN actividad ─────────────────────────────────────────────────
+    if [ ${#usuarios_sin_hits[@]} -gt 0 ]; then
+        echo "  ✘  USUARIOS SIN RESULTADOS (${#usuarios_sin_hits[@]})"
+        echo "  ------------------------------------------------------------"
+        echo "  Los siguientes usuarios no registraron ninguna conexión"
+        echo "  en ninguno de los ${#archivos[@]} archivos revisados:"
+        echo ""
+        for usuario in "${usuarios_sin_hits[@]}"; do
+            echo "    - $usuario"
+        done
+    else
+        echo "  ✘  USUARIOS SIN RESULTADOS"
+        echo "  ------------------------------------------------------------"
+        echo "  (todos los usuarios auditados tuvieron actividad)"
+    fi
+
+    echo ""
+    echo "============================================================"
+    echo "  FIN DEL REPORTE"
+    echo "============================================================"
+
+} > "$REPORTE_GENERAL"
+
+# ── Resumen en pantalla ───────────────────────────────────────────────────────
 echo ""
 echo "╔══════════════════════════════════════════════════╗"
 echo "║   Proceso Completado                             ║"
@@ -200,4 +282,6 @@ for usuario in "${lista_usuarios[@]}"; do
     echo "    Seguimiento       : $TRACKING_FILE"
     echo "  ------------------------------------------"
 done
+echo ""
+echo "  ► Reporte general: $REPORTE_GENERAL"
 echo ""
