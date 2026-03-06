@@ -45,14 +45,16 @@ Proceso total completado en /sysx/data/pg_log/resultados_user_log
 Los resultados se almacenan automáticamente en una carpeta llamada `resultados_user_log` dentro de la ruta especificada, organizada por usuario:
 
 ```text
-/sysx/data/pg_log/resultados_user_log/
-├── admin_db/
-│   ├── seguimiento_revision.txt   # Historial de archivos procesados
-│   ├── postgresql-251201.log      # Registros encontrados el día 01
-│   └── postgresql-251202.log      # Registros encontrados el día 02
-└── ventas_pos/
-    ├── seguimiento_revision.txt
-    └── postgresql-251201.log
+resultados_user_log - 10.0.0.100/  # Carpeta principal con la IP del servidor
+├── reporte_general.txt            # Txt Reporte general de todos los usuarios
+├── sysusariostest1/               # Carpeta con nombre del usuario
+│   ├── seguimiento_revision.txt   # Txt Historial de archivos procesados
+│   ├── postgresql-251201.log      # Log Registros encontrados el día 01
+│   └── postgresql-251202.log      # Log Registros encontrados el día 02
+│   └── ips_detectadas.txt         # Txt con IPs que uso el usuario para conectarse o consultar
+└── sysusariostest2/
+    └── seguimiento_revision.txt
+
 
 ```
 
