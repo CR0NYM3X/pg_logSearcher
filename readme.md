@@ -46,12 +46,12 @@ Los resultados se almacenan automáticamente en una carpeta llamada `resultados_
 
 ```text
 resultados_user_log - 10.0.0.100/  # Carpeta principal con la IP del servidor
-├── reporte_general.txt            # Txt Reporte general de todos los usuarios
+├── reporte_general.txt            # Txt Reporte general de todos los usuarios y IPs encontradas
 ├── sysusariostest1/               # Carpeta con nombre del usuario
-│   ├── seguimiento_revision.txt   # Txt Historial de archivos procesados
-│   ├── postgresql-251201.log      # Log Registros encontrados el día 01
-│   └── postgresql-251202.log      # Log Registros encontrados el día 02
-│   └── ips_detectadas.txt         # Txt con IPs que uso el usuario para conectarse o consultar
+│   ├── seguimiento_revision.txt   # Txt con estatus de cada archivo log revisado.
+│   ├── postgresql-251201.log      # Log con Registros encontrados el día 01
+│   └── postgresql-251202.log      # Log con  Registros encontrados el día 02
+│   └── ips_detectadas.txt         # Txt con IPs que se encontraron en todos los logs procesados
 └── sysusariostest2/
     └── seguimiento_revision.txt
 
