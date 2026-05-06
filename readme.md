@@ -10,13 +10,31 @@ Antes de usar el script, asegúrate de otorgar los permisos necesarios:
 ```bash
 chmod +x pg_logsearcher.sh
 
+[postgres@server-test]$ ./pg_logsearcher.sh
+
+Uso: ./logs.sh /ruta/a/logs "usuario1,usuario2,usuario3" [num_cpus] [--sin-detalle]
+
+  Argumentos:
+    1) /ruta/a/logs     → Carpeta donde están los .tar.gz de PostgreSQL
+    2) "user1,user2"    → Usuarios a buscar, separados por coma
+    3) num_cpus         → (Opcional) Núcleos a usar. Por defecto: todos los disponibles
+    4) --sin-detalle    → (Opcional) No guardar los .log con cada registro encontrado.
+                          Ahorra espacio en disco; se mantienen IPs, tracking y reporte.
+
+  Ejemplos:
+    ./logs.sh /var/log/postgresql "postgres,appuser"
+    ./logs.sh /var/log/postgresql "postgres,appuser" 4
+    ./logs.sh /var/log/postgresql "postgres,appuser" 4 --sin-detalle
+    ./logs.sh /var/log/postgresql "postgres,appuser" "" --sin-detalle
+
+
 ```
 
 
 2. **Ejecutar la herramienta:**
 Pasa como primer argumento la **ruta de los logs** y como segundo la **lista de usuarios** separados por comas (sin espacios):
 ```bash
-./pg_logsearcher.sh /sysx/data/pg_log "admin_db,ventas_pos,monitor_apps" 8
+./pg_logsearcher.sh /sysx/data/pg_log "admin_db,ventas_pos,monitor_apps" 8 --sin-detalle
 ```
 
 
