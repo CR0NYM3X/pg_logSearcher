@@ -16,7 +16,7 @@ chmod +x pg_logsearcher.sh
 2. **Ejecutar la herramienta:**
 Pasa como primer argumento la **ruta de los logs** y como segundo la **lista de usuarios** separados por comas (sin espacios):
 ```bash
-./pg_logsearcher.sh /sysx/data/pg_log "admin_db,ventas_pos,monitor_apps"
+./pg_logsearcher.sh /sysx/data/pg_log "admin_db,ventas_pos,monitor_apps" 8
 ```
 
 
